@@ -1,5 +1,3 @@
-import java.util.*;
-
 /*
  * @Description:
  * 生命游戏
@@ -10,7 +8,7 @@ import java.util.*;
  * 如果活细胞周围八个位置有超过三个活细胞，则该位置活细胞死亡；
  * 如果死细胞周围正好有三个活细胞，则该位置死细胞复活；
  * 下一个状态是通过将上述规则同时应用于当前状态下的每个细胞所形成的，其中细胞的出生和死亡是同时发生的。给你 m x n 网格面板 board 的当前状态，返回下一个状态。
- * 
+ *
  * 示例 1：
  * 输入：board = [[0,1,0],[0,0,1],[1,1,1],[0,0,0]]
  * 输出：[[0,0,0],[1,0,1],[0,1,1],[0,1,0]]
@@ -18,52 +16,50 @@ import java.util.*;
  * 输入：board = [[1,1],[1,0]]
  * 输出：[[1,1],[1,1]]
  */
-class Solution {
+class Solution19 {
     public void gameOfLife(int[][] board) {
-        int[] neighbors = {0, 1, -1};
+        int rows = board.length;
+        int cols = board[0].length;
 
-        int rows = board.length();
-        int cols = board(0).length;
-
-        // 创建复制数组 copyBoard
-        int[][]() copyBoard = new int[rows][cols];
-
-        // 从原数组复制一份到 copyBoard 中
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                copyBoard[row][col] = board[row][col];
-            }
-        }
+        // 八个方向：上、下、左、右、左上、右上、左下、右下
+        int[] directions = {-1, 0, 1};
 
         // 遍历面板每一个格子里的细胞
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-
-                // 对于每一个细胞统计其八个相邻位置里的活细胞数量
                 int liveNeighbors = 0;
 
+                // 统计周围八个细胞的活细胞数量
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
+                        if (!(directions[i] == 0 && directions[j] == 0)) {
+                            int r = row + directions[i];
+                            int c = col + directions[j];
 
-                        if (!(neighbors[i] == 0 && neighbors[j] == 0)) {
-                            int r = (row + neighbors[i]);
-                            int c = (col + neighbors[j]);
-
-                            // 查看相邻的细胞是否是活细胞
-                            if {(r < rows && r >= 0) && (c < cols && c >= 0) && (copyBoard[r][c] == 1)} {
-                                liveNeighbors += 1;
+                            if (r >= 0 && r < rows && c >= 0 && c < cols && Math.abs(board[r][c]) == 1) {
+                                liveNeighbors++;
                             }
                         }
                     }
                 }
 
-                // 规则 1 或规则 3
-                if ((copyBoard[row][col] === 1) && (liveNeighbors < 2 || liveNeighbors > 3)) {
-                    board[row][col] = 0;
+                // 应用规则：标记状态变化
+                if (board[row][col] == 1 && (liveNeighbors < 2 || liveNeighbors > 3)) {
+                    board[row][col] = -1; // 活细胞变为死细胞
                 }
-                // 规则 4
-                if (copyBoard[row][col] == 0 && liveNeighbors == 3) {
+                if (board[row][col] == 0 && liveNeighbors == 3) {
+                    board[row][col] = 2; // 死细胞复活
+                }
+            }
+        }
+
+        // 更新 board：恢复 0 或 1 的状态
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (board[row][col] > 0) {
                     board[row][col] = 1;
+                } else {
+                    board[row][col] = 0;
                 }
             }
         }
